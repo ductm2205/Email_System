@@ -1,0 +1,42 @@
+<!-- views/signin.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Email System</title>
+    <link rel="stylesheet" href="/css/signin.css">
+</head>
+
+<body>
+    <div class="signin-container">
+        <h1>Sign In</h1>
+
+        <% if (error) { %>
+            <div class="error">
+                <%= error %>
+            </div>
+            <% } %>
+
+                <form action="/signin" method="POST">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <button type="submit">Sign In</button>
+                </form>
+
+                <div class="signup-link">
+                    Don't have an account? <a href="/signup">Sign Up</a>
+                </div>
+    </div>
+</body>
+
+</html>

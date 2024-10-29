@@ -1,0 +1,96 @@
+<!-- views/signup.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Email System</title>
+    <link rel="stylesheet" href="/css/signup.css">
+</head>
+
+<body>
+    <div class="signup-container">
+        <h1>Create Account</h1>
+
+        <% if (error) { %>
+            <div class="error">
+                <%= error %>
+            </div>
+            <% } %>
+
+                <% if (success) { %>
+                    <div class="success">
+                        <%= success %>
+                            <div class="signin-link">
+                                <a href="/signin">Click here to sign in</a>
+                            </div>
+                    </div>
+                    <% } else { %>
+                        <form action="/signup" method="POST" onsubmit="return validateForm()">
+                            <div class="form-group">
+                                <label for="fullName">Full Name:</label>
+                                <input type="text" id="fullName" name="fullName"
+                                    value="<%= locals.values ? values.fullName || '' : '' %>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address:</label>
+                                <input type="email" id="email" name="email"
+                                    value="<%= locals.values ? values.email || '' : '' %>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" minlength="6" required>
+                                <div class="password-requirements">
+                                    Password must be at least 6 characters long
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">Re-enter Password:</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+
+                            <button type="submit">Create Account</button>
+                        </form>
+
+                        <div class="signin-link">
+                            Already have an account? <a href="/">Sign In</a>
+                        </div>
+                        <% } %>
+    </div>
+
+    <script>
+        // validate input
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = document.getElementById('email').value;
+            const fullName = document.getElementById('fullName').value;
+
+            // Check for empty fields
+            if (!fullName || !email || !password || !confirmPassword) {
+                alert('All fields are required');
+                return false;
+            }
+
+            // Check password length
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return false;
+            }
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+
+</html>

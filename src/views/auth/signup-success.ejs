@@ -1,0 +1,44 @@
+<%- include('layout', { user: undefined }) %>
+
+    <div class="success-container">
+        <h1>Welcome to Email System!</h1>
+        <div class="success-message">
+            Your account has been created successfully.
+        </div>
+        <div class="success-actions">
+            <a href="/" class="button">Sign In</a>
+        </div>
+    </div>
+
+    <style>
+        .success-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-message {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            border-radius: 4px;
+            color: #2e7d32;
+        }
+
+        .success-actions {
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
+    </style>
