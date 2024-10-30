@@ -2,23 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email System</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email System</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-    <div class="container">
-        <% if (user) { %>
-            <%- include('partials/header', {user: user}) %>
-                <% } %>
+  <div class="container">
+    <% if (user) { %>
+    <%- include('partials/header', {user: user}) %>
+    <% } %>
 
-                    <!-- Main content body -->
-                    <div class="main-content">
-                        <!-- other .ejs that extend this layout -->
-                    </div>
+    <!-- Main content body -->
+    <div class="main-content">
+      <!-- other .ejs that extend this layout -->
+      <%- body %>
     </div>
+  </div>
 </body>
 
 </html>

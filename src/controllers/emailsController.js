@@ -6,7 +6,7 @@ async function renderInboxPage(req, res) {
 
   // get the messages received by current user
   const [emails] = await dbConnection.execute(
-    "SELECT * FROM emails WHERE sender_id = ?",
+    "SELECT * FROM emails WHERE receiver_id = ?",
     [user.id]
   );
 
@@ -18,7 +18,7 @@ async function renderOutboxPage(req, res) {
   const user = req.session.user ? req.session.user : null;
 
   const [emails] = await dbConnection.execute(
-    "select * from emails where receiver_id = ?",
+    "select * from emails where sender_id = ?",
     [user.id]
   );
 

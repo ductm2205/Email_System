@@ -23,8 +23,6 @@ wpr2201040111/                      # Replace with your student ID
 │   │   └── upload.middleware.js  # File upload handling
 │   │
 │   ├── views/
-│   │   ├── layouts/
-│   │   │   └── main.ejs         # Main layout template
 │   │   ├── partials/
 │   │   │   ├── header.ejs       # Header with user info
 │   │   │   ├── navigation.ejs   # Left side menu
@@ -38,6 +36,7 @@ wpr2201040111/                      # Replace with your student ID
 │   │   │   ├── compose.ejs      # Compose email page
 │   │   │   └── detail.ejs       # Email detail page
 │   │   └── error.ejs            # Error page (403, etc)
+│   │   └── layout.ejs            # main layout
 │   │
 │   ├── public/
 │   │   ├── css/
