@@ -23,7 +23,7 @@ async function signin(req, res) {
 
     if (users.length === 0) {
       return res.render("auth/signin", {
-        error: "Invalid email or password",
+        error: "Email has not been registered",
         layout: false,
       });
     }
@@ -77,9 +77,29 @@ async function signup(req, res) {
       [email]
     );
 
+    // collapse email
     if (existingUsers.length > 0) {
       return res.render("auth/signup", {
         error: "Email address is already in use",
+        success: null,
+        values: { fullName, email },
+        layout: false,
+      });
+    }
+
+    // unmatch cfpw
+    if (password !== confirmPassword) {
+      return res.render("auth/signup", {
+        error: "Unmatched confirm password",
+        success: null,
+        values: { fullName, email },
+        layout: false,
+      });
+    }
+
+    if (password.length < 6) {
+      return res.render("auth/signup", {
+        error: "Password must have more than 6 digits",
         success: null,
         values: { fullName, email },
         layout: false,

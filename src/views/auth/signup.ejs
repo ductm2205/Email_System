@@ -27,7 +27,8 @@
                             </div>
                     </div>
                     <% } else { %>
-                        <form action="/signup" method="POST" onsubmit="return validateForm()">
+                        <!-- <form action="/signup" method="POST" onsubmit="return validateForm()"> -->
+                        <form action="/signup" method="POST">
                             <div class="form-group">
                                 <label for="fullName">Full Name:</label>
                                 <input type="text" id="fullName" name="fullName"
@@ -62,7 +63,7 @@
                         <% } %>
     </div>
 
-    <script>
+    <!-- <script>
         // validate input
         function validateForm() {
             const password = document.getElementById('password').value;
@@ -90,7 +91,7 @@
 
             return true;
         }
-    </script>
+    </script> -->
 </body>
 
 </html>
