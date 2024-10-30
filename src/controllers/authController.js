@@ -2,7 +2,13 @@ const dbConnection = require("../config/dbConnection");
 const bcrypt = require("bcrypt");
 
 async function renderSignInPage(req, res) {
-  res.render("auth/signin", { error: null });
+  const user = req.session.user ? req.session.user : null;
+
+  if (user) {
+    res.redirect("/");
+  }
+
+  res.render("auth/signin", { error: null, layout: false });
 }
 
 async function signin(req, res) {
@@ -16,7 +22,10 @@ async function signin(req, res) {
     );
 
     if (users.length === 0) {
-      return res.render("auth/signin", { error: "Invalid email or password" });
+      return res.render("auth/signin", {
+        error: "Invalid email or password",
+        layout: false,
+      });
     }
 
     const user = users[0];
@@ -28,6 +37,7 @@ async function signin(req, res) {
     if (!match) {
       return res.render("auth/signin", {
         error: "Invalid email or password",
+        layout: false,
       });
     }
 
@@ -38,17 +48,23 @@ async function signin(req, res) {
       fullName: user.full_name,
     };
 
-    res.redirect("/inbox");
+    res.redirect("/");
   } catch (error) {
     console.error("Error during sign-in:", error);
     res.render("auth/signin", {
       error: "An error occurred during sign-in",
+      layout: false,
     });
   }
 }
 
 async function renderSignUpPage(req, res) {
-  res.render("auth/signup", { error: null, success: null });
+  const user = req.session.user ? req.session.user : null;
+
+  if (user) {
+    res.redirect("/");
+  }
+  res.render("auth/signup", { error: null, success: null, layout: false });
 }
 
 async function signup(req, res) {
@@ -66,6 +82,7 @@ async function signup(req, res) {
         error: "Email address is already in use",
         success: null,
         values: { fullName, email },
+        layout: false,
       });
     }
 
@@ -83,6 +100,7 @@ async function signup(req, res) {
         error: "Something went wrong!",
         success: null,
         values: null,
+        layout: false,
       });
     }
     // Show success message
@@ -90,6 +108,7 @@ async function signup(req, res) {
       error: null,
       success: "Account created successfully! You can now sign in.",
       values: {},
+      layout: false,
     });
   } catch (error) {
     console.error("Error during sign-up:", error);
@@ -97,6 +116,7 @@ async function signup(req, res) {
       error: "An error occurred during sign-up",
       success: null,
       values: { fullName, email },
+      layout: false,
     });
   }
 }

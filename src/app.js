@@ -3,8 +3,10 @@ const session = require("express-session");
 const multer = require("multer");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const layouts = require("express-ejs-layouts");
 
 const { isAuthenticated } = require("./middlewares/authMiddleware");
+const { layoutMiddleware } = require("./middlewares/layoutMiddleware");
 
 const app = express();
 
@@ -26,6 +28,7 @@ app.use(
 
 // setup ejs
 app.set("view engine", "ejs");
+app.use(layouts);
 // set static view templates folder
 app.set("views", path.join(__dirname, "views"));
 
@@ -34,7 +37,7 @@ const auth = require("./routes/authRoutes");
 const emails = require("./routes/emailsRoutes");
 
 app.use("/", auth);
-app.use("/", isAuthenticated, emails);
+app.use("/", isAuthenticated, layoutMiddleware, emails);
 
 //
 module.exports = app;
