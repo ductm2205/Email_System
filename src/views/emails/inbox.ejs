@@ -1,0 +1,47 @@
+<div class="inbox-wrapper">
+  <div class="page-name">
+    <h3>Inbox</h3>
+    <div class="delete-box">
+      <a href="/email/deleteAll"><button class="delete-btn">Delete</button></a>
+    </div>
+  </div>
+
+  <div class="email-div">
+    <table class="email-list">
+      <thead>
+        <tr>
+          <th><input type="checkbox"></th>
+          <th>Sender</th>
+          <th>Subject</th>
+          <th>Sent At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% emails.forEach(email=> { %>
+        <tr class="email-item" onclick="window.location.href='/email/<%= email.id %>'">
+          <td class="">
+            <input type="checkbox">
+          </td>
+          <td class="sender">
+            <%= email.sender_fullname %>
+          </td>
+          <td class="subject">
+            <%= email.subject %>
+          </td>
+          <td class="sent_at">
+            <% const sentDate=new Date(email.sent_at); const now=new Date(); const oneDay=24 * 60 * 60 *
+                            1000; const daysAgo=Math.floor((now - sentDate) / oneDay); if (daysAgo===0) { %>
+            <%= sentDate.toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit' }) %>
+            <% } else if (daysAgo===1) { %>
+            Yesterday
+            <% } else { %>
+            <%= sentDate.toLocaleDateString('en-US', { month: 'short' , day: 'numeric' }) %>
+            <% } %>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+</div>

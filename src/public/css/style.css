@@ -1,4 +1,3 @@
-/* Basic CSS reset */
 * {
   margin: 0;
   padding: 0;
@@ -29,7 +28,6 @@ body {
   border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
 }
-
 
 .nav {
   display: flex;
@@ -92,38 +90,85 @@ button:hover {
 }
 
 /* Email list styles */
-.email-list {
-  list-style: none;
+.page-name {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.email-item {
+.delete-btn {
+  background-color: #d14c4e;
+}
+.delete-btn:hover {
+  background-color: #8d191a;
+}
+
+.emai-div {
+  margin-top: 10px;
+}
+
+.email-list {
+  width: 100%;
+  border-collapse: collapse;
+  /* table-layout: fixed;  */
+}
+
+.email-list th,
+.email-list td {
   padding: 10px;
   border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: left;
 }
 
-.email-item:hover {
+.email-list .checkbox {
+  width: 10px;
+}
+
+.email-list td:first-child {
+  width: 80px;
+}
+
+.email-list tbody tr:hover {
   background-color: #f8f9fa;
+  cursor: pointer;
+}
+.email-list .sender {
+  width: 250px; /* Adjust as needed */
+}
+
+.email-list .subject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0; /* This is important for text-overflow to work */
+}
+.email-list .sent_at {
+  width: 150px; /* Adjust as needed */
+  white-space: nowrap;
 }
 
 /* Pagination */
 .pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  margin-top: 15px;
+  text-align: center;
 }
 
 .pagination a {
+  margin: 0 5px;
   padding: 5px 10px;
   text-decoration: none;
-  border: 1px solid #ddd;
   color: #007bff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
 }
 
-.pagination a.active {
-  background-color: #007bff;
-  color: white;
+.pagination a:hover {
+  background-color: #f8f9fa;
+}
+
+.pagination span {
+  margin: 0 5px;
+  padding: 5px 10px;
+  font-weight: bold;
 }

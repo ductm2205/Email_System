@@ -1,15 +1,11 @@
 <div class="pagination">
-    <% if (currentPage> 1) { %>
-        <a href="<%= baseUrl %>?page=<%= currentPage - 1 %>">&laquo; Previous</a>
-        <% } %>
+  <% if (currentPage> 1) { %>
+  <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+  <% } %>
 
-            <% for(let i=1; i <=totalPages; i++) { %>
-                <a href="<%= baseUrl %>?page=<%= i %>" class="<%= currentPage === i ? 'active' : '' %>">
-                    <%= i %>
-                </a>
-                <% } %>
+  <span>Page <%= currentPage %> of <%= totalPages %></span>
 
-                    <% if (currentPage < totalPages) { %>
-                        <a href="<%= baseUrl %>?page=<%= currentPage + 1 %>">Next &raquo;</a>
-                        <% } %>
+  <% if (currentPage < totalPages) { %>
+  <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+  <% } %>
 </div>
