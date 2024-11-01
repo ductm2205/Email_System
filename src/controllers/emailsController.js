@@ -32,12 +32,12 @@ async function renderInboxPage(req, res) {
   // Save the data in session for reuse
   req.session.data = {
     emails: emails,
+    currentPage: page,
+    totalPages: totalPages,
   };
 
   // Render the inbox page with pagination data
   res.render("emails/inbox", {
-    currentPage: page,
-    totalPages: totalPages,
     success: null,
     error: null,
   });
@@ -69,11 +69,11 @@ async function renderOutboxPage(req, res) {
   // Save the data in session for reuse
   req.session.data = {
     emails: emails,
+    currentPage: page,
+    totalPages: totalPages,
   };
 
   res.render("emails/outbox", {
-    currentPage: page,
-    totalPages: totalPages,
     success: null,
     error: null,
   });
