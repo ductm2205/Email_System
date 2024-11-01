@@ -31,13 +31,13 @@ async function renderInboxPage(req, res) {
 
   // Save the data in session for reuse
   req.session.data = {
-    emails,
-    currentPage: page,
-    totalPages,
+    emails: emails,
   };
 
   // Render the inbox page with pagination data
   res.render("emails/inbox", {
+    currentPage: page,
+    totalPages: totalPages,
     success: null,
     error: null,
   });
@@ -68,11 +68,12 @@ async function renderOutboxPage(req, res) {
 
   // Save the data in session for reuse
   req.session.data = {
-    emails,
-    currentPage: page,
-    totalPages,
+    emails: emails,
   };
+
   res.render("emails/outbox", {
+    currentPage: page,
+    totalPages: totalPages,
     success: null,
     error: null,
   });
@@ -96,9 +97,11 @@ async function renderEmailDetail(req, res) {
     [email_id]
   );
 
+  req.session.data = { email: email[0] };
+
+  console.log(req.session.data);
+
   return res.render("emails/detail", {
-    user: user,
-    email: email[0],
     error: null,
     success: null,
   });
@@ -137,8 +140,8 @@ async function deleteEmailById(req, res) {
     }
 
     // Update session data after deletion
-    if (req.session.inboxData) {
-      req.session.inboxData.emails = req.session.inboxData.emails.filter(
+    if (req.session.data) {
+      req.session.data.emails = req.session.data.emails.filter(
         (email) => email.id !== parseInt(email_id)
       );
     }
