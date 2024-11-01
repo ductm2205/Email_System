@@ -99,8 +99,6 @@ async function renderEmailDetail(req, res) {
 
   req.session.data = { email: email[0] };
 
-  console.log(req.session.data);
-
   return res.render("emails/detail", {
     error: null,
     success: null,
@@ -119,13 +117,18 @@ async function deleteEmailById(req, res) {
       },
     });
 
+    // If email not found
+    if (!email) {
+      return res.status(404).json({ error: "Email not found" });
+    }
+
     // Check if current user is the sender or the receiver
     const updateField =
       user.id === email.sender_id
         ? { is_deleted_by_sender: true }
         : { is_deleted_by_recipient: true };
 
-    // Update the target field
+    // Update the target field to mark email as deleted
     const [updateRes] = await Email.update(updateField, {
       where: {
         id: email_id,
@@ -133,25 +136,43 @@ async function deleteEmailById(req, res) {
     });
 
     if (!updateRes) {
-      return res.render("email/detail", {
-        error: "Something went wrong!",
-        success: null,
-      });
+      return res.status(500).json({ error: "Failed to delete email" });
     }
 
     // Update session data after deletion
-    if (req.session.data) {
+    if (req.session.data && req.session.data.emails) {
       req.session.data.emails = req.session.data.emails.filter(
         (email) => email.id !== parseInt(email_id)
       );
     }
 
-    // Redirect to inbox
-    res.redirect("/inbox");
+    // Send a success response to the client
+    res.status(200).json({ success: "Email deleted successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the email" });
+  }
+}
 
-    // res.redirect();
+async function deleteMultipleEmails(req, res) {
+  try {
+    const user = req.session.user;
+    const emailIds = req.body.emailIds;
+
+    if (!emailIds || emailIds.length === 0) {
+      return res.status(400).json({ error: "No emails selected for deletion" });
+    }
+
+    console.log(emailIds);
+
+    res.status(200).json({ success: "Selected emails deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the emails" });
   }
 }
 
@@ -160,4 +181,5 @@ module.exports = {
   renderOutboxPage,
   renderEmailDetail,
   deleteEmailById,
+  deleteMultipleEmails,
 };

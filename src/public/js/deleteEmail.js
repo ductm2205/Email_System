@@ -5,14 +5,18 @@ async function deleteEmail(emailId) {
   try {
     const response = await fetch(`/email/delete/${emailId}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (response.ok) {
-      // Redirect or refresh to show the updated list after deletion
-      alert("DELETED");
-      window.location.href = "/inbox";
+      const data = await response.json();
+      alert(data.success); // Alert the success message
+      window.location.href = "/inbox"; // Redirect to inbox
     } else {
-      alert("Failed to delete the email.");
+      const errorData = await response.json();
+      alert(errorData.error || "Failed to delete the email.");
     }
   } catch (error) {
     console.error("Error:", error);

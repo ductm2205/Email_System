@@ -7,7 +7,7 @@
   <div class="page-name">
     <h3>Inbox</h3>
     <div class="delete-box">
-      <a href="/email/delete"><button class="delete-btn">Delete</button></a>
+      <button class="delete-btn" onclick="deleteSelectedEmails()">Delete</button>
     </div>
   </div>
 
@@ -15,25 +15,25 @@
     <table class="email-list">
       <thead>
         <tr>
-          <th><input type="checkbox"></th>
+          <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
           <th>Sender</th>
           <th>Subject</th>
           <th>Sent At</th>
         </tr>
       </thead>
       <tbody>
-        <% session.data.emails.forEach(email=> { %>
-        <tr class="email-item" onclick="window.location.href='/email/<%= email.id %>'">
-          <td class="">
-            <input type="checkbox">
+        <% session.data.emails.forEach(email => { %>
+        <tr class="email-item">
+          <td>
+            <input type="checkbox" class="email-checkbox" value="<%= email.id %>">
           </td>
-          <td class="sender">
+          <td class="sender" onclick="window.location.href='/email/<%= email.id %>'">
             <%= email.sender_fullname %>
           </td>
-          <td class="subject">
+          <td class="subject" onclick="window.location.href='/email/<%= email.id %>'">
             <%= email.subject %>
           </td>
-          <td class="sent_at">
+          <td class="sent_at" onclick="window.location.href='/email/<%= email.id %>'">
             <% const sentDate=new Date(email.sent_at); const now=new Date(); const oneDay=24 * 60 * 60 *
                             1000; const daysAgo=Math.floor((now - sentDate) / oneDay); if (daysAgo===0) { %>
             <%= sentDate.toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit' }) %>
@@ -51,3 +51,6 @@
 
   <%- include("../partials/pagination") %>
 </div>
+
+<script src="/js/toggleSelectAll.js"></script>
+<script src="/js/deleteSelectedEmails.js"></script>
