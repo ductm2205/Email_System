@@ -165,7 +165,40 @@ async function deleteMultipleEmails(req, res) {
       return res.status(400).json({ error: "No emails selected for deletion" });
     }
 
-    console.log(emailIds);
+    // Find emails and mark as deleted by sender or recipient based on the user's role
+    const emails = await Email.findAll({
+      where: {
+        id: emailIds,
+      },
+    });
+
+    const updateFields = emails.map((email) => {
+      return {
+        id: email.id,
+        updateField:
+          user.id === email.sender_id
+            ? { is_deleted_by_sender: true }
+            : { is_deleted_by_recipient: true },
+      };
+    });
+
+    // Perform updates in batch
+    await Promise.all(
+      updateFields.map((field) =>
+        Email.update(field.updateField, {
+          where: {
+            id: field.id,
+          },
+        })
+      )
+    );
+
+    // Update session data
+    if (req.session.data && req.session.data.emails) {
+      req.session.data.emails = req.session.data.emails.filter(
+        (email) => !emailIds.includes(email.id.toString())
+      );
+    }
 
     res.status(200).json({ success: "Selected emails deleted successfully" });
   } catch (error) {

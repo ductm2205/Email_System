@@ -17,7 +17,7 @@ async function deleteSelectedEmails() {
   if (!confirmDelete) return;
 
   try {
-    const response = await fetch(`/email/delete`, {
+    const response = await fetch(`/api/email/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
