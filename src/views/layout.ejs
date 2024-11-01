@@ -10,8 +10,8 @@
 
 <body>
   <div class="container">
-    <% if (user) { %>
-    <%- include('partials/header', {user: user}) %>
+    <% if (session.user) { %>
+    <%- include('partials/header', {user: session.user}) %>
     <% } %>
 
     <!-- Main content body -->

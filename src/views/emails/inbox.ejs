@@ -22,7 +22,7 @@
         </tr>
       </thead>
       <tbody>
-        <% emails.forEach(email=> { %>
+        <% session.data.emails.forEach(email=> { %>
         <tr class="email-item" onclick="window.location.href='/email/<%= email.id %>'">
           <td class="">
             <input type="checkbox">

@@ -1,11 +1,11 @@
 <div class="pagination">
-  <% if (currentPage> 1) { %>
-  <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+  <% if (session.data.currentPage> 1) { %>
+  <a href="?page=<%= session.data.currentPage - 1 %>">&laquo; Previous</a>
   <% } %>
 
-  <span>Page <%= currentPage %> of <%= totalPages %></span>
+  <span>Page <%= session.data.currentPage %> of <%= session.data.totalPages %></span>
 
-  <% if (currentPage < totalPages) { %>
-  <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+  <% if (session.data.currentPage < session.data.totalPages) { %>
+  <a href="?page=<%= session.data.currentPage + 1 %>">Next &raquo;</a>
   <% } %>
 </div>

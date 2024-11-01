@@ -30,7 +30,7 @@ async function renderInboxPage(req, res) {
   );
 
   // Save the data in session for reuse
-  req.session.inboxData = {
+  req.session.data = {
     emails,
     currentPage: page,
     totalPages,
@@ -38,10 +38,6 @@ async function renderInboxPage(req, res) {
 
   // Render the inbox page with pagination data
   res.render("emails/inbox", {
-    user: user,
-    emails: emails,
-    currentPage: page,
-    totalPages: totalPages,
     success: null,
     error: null,
   });
@@ -70,11 +66,13 @@ async function renderOutboxPage(req, res) {
     [user.id, emailsPerPage, offset]
   );
 
-  res.render("emails/outbox", {
-    user: user,
-    emails: emails,
+  // Save the data in session for reuse
+  req.session.data = {
+    emails,
     currentPage: page,
-    totalPages: totalPages,
+    totalPages,
+  };
+  res.render("emails/outbox", {
     success: null,
     error: null,
   });

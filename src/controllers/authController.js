@@ -43,7 +43,7 @@ async function signin(req, res) {
     req.session.user = {
       id: user.id,
       email: user.email,
-      fullName: user.fullname,
+      fullName: user.full_name,
     };
 
     res.redirect("/");

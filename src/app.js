@@ -41,6 +41,10 @@ const emails = require("./routes/emailsRoutes");
 
 //
 app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+app.use((req, res, next) => {
   res.locals.currentUrl = req.url;
   next();
 });
