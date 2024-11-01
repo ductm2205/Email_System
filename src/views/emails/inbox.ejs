@@ -1,8 +1,13 @@
 <div class="inbox-wrapper">
+  <% if (success) { %>
+  <div class="success">
+    <%= success %>
+  </div>
+  <% } %>
   <div class="page-name">
     <h3>Inbox</h3>
     <div class="delete-box">
-      <a href="/email/deleteAll"><button class="delete-btn">Delete</button></a>
+      <a href="/email/delete"><button class="delete-btn">Delete</button></a>
     </div>
   </div>
 

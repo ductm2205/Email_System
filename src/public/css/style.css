@@ -172,3 +172,22 @@ button:hover {
   padding: 5px 10px;
   font-weight: bold;
 }
+
+/* Email detail */
+.email-detail {
+  padding: 10px;
+}
+
+.email-sender,
+.email-receiver,
+.email-body,
+.email-attachment-path {
+  margin-top: 10px; /* Adjust the value as needed */
+}
+
+/**/
+.delete-box {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}

@@ -1,4 +1,3 @@
-// src/public/js/delete-email.js
 document.addEventListener("DOMContentLoaded", function () {
   const deleteButton = document.getElementById("deleteSelected");
   const checkboxes = document.querySelectorAll(".email-select");

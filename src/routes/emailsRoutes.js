@@ -8,4 +8,6 @@ router.get("/outbox", emailController.renderOutboxPage);
 
 router.get("/email/:email_id", emailController.renderEmailDetail);
 
+router.delete("/email/delete/:email_id?", emailController.deleteEmailById);
+
 module.exports = router;

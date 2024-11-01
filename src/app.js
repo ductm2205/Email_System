@@ -5,6 +5,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const layouts = require("express-ejs-layouts");
 
+const methodOverride = require("method-override");
+
 const { isAuthenticated } = require("./middlewares/authMiddleware");
 const { layoutMiddleware } = require("./middlewares/layoutMiddleware");
 
@@ -15,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(methodOverride("_method"));
 
 // setup session
 app.use(
@@ -35,6 +38,12 @@ app.set("views", path.join(__dirname, "views"));
 // setup routes
 const auth = require("./routes/authRoutes");
 const emails = require("./routes/emailsRoutes");
+
+//
+app.use((req, res, next) => {
+  res.locals.currentUrl = req.url;
+  next();
+});
 
 app.use("/", auth);
 app.use("/", isAuthenticated, layoutMiddleware, emails);

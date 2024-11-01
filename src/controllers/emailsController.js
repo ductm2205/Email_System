@@ -27,12 +27,21 @@ async function renderInboxPage(req, res) {
     [user.id, emailsPerPage, offset]
   );
 
+  // Save the data in session for reuse
+  req.session.inboxData = {
+    emails,
+    currentPage: page,
+    totalPages,
+  };
+
   // Render the inbox page with pagination data
   res.render("emails/inbox", {
     user: user,
     emails: emails,
     currentPage: page,
     totalPages: totalPages,
+    success: null,
+    error: null,
   });
 }
 
@@ -64,6 +73,8 @@ async function renderOutboxPage(req, res) {
     emails: emails,
     currentPage: page,
     totalPages: totalPages,
+    success: null,
+    error: null,
   });
 }
 
@@ -73,13 +84,72 @@ async function renderEmailDetail(req, res) {
 
   // Fetch data
   const [email] = await dbConnection.execute(
-    `SELECT * 
+    `
+    SELECT emails.*, 
+      sender.full_name AS sender_fullname, 
+      receiver.full_name AS receiver_fullname
+    FROM emails
+    JOIN users AS sender ON emails.sender_id = sender.id
+    JOIN users AS receiver ON emails.receiver_id = receiver.id
+    WHERE emails.id = ?;
+    `,
+    [email_id]
+  );
+
+  return res.render("emails/detail", {
+    user: user,
+    email: email[0],
+    error: null,
+    success: null,
+  });
+}
+
+async function deleteEmailById(req, res) {
+  const user = req.session.user;
+  const email_id = req.params.email_id;
+
+  // determine if the current user is sender or receiver
+  const [email] = await dbConnection.execute(
+    `SELECT sender_id, receiver_id
     FROM emails
     WHERE emails.id = ?`,
     [email_id]
   );
 
-  return res.render("emails/detail", { email: email[0] });
+  if (!email) {
+  }
+
+  let updatedField =
+    email.sender_id === user.id
+      ? "is_deleted_by_sender"
+      : "is_deleted_by_recipient";
+
+  const [isDeleted] = await dbConnection.execute(
+    `UPDATE emails SET ${updatedField} = 1 WHERE emails.id = ?`,
+    [email_id]
+  );
+
+  if (!isDeleted) {
+    return res.render("email/detail", {
+      error: "Something went wrong!",
+      success: null,
+    });
+  }
+
+  // Update session data after deletion
+  if (req.session.inboxData) {
+    req.session.inboxData.emails = req.session.inboxData.emails.filter(
+      (email) => email.id !== parseInt(email_id)
+    );
+  }
+
+  // Redirect to inbox
+  res.redirect("/inbox");
 }
 
-module.exports = { renderInboxPage, renderOutboxPage, renderEmailDetail };
+module.exports = {
+  renderInboxPage,
+  renderOutboxPage,
+  renderEmailDetail,
+  deleteEmailById,
+};
