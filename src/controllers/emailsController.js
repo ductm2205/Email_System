@@ -1,5 +1,7 @@
 const dbConnection = require("../config/dbConnection");
 const { paginate } = require("../utils/paginate");
+const User = require("../models/User");
+const Email = require("../models/Email");
 
 // Pagination
 const emailsPerPage = 5;
@@ -105,46 +107,51 @@ async function renderEmailDetail(req, res) {
 }
 
 async function deleteEmailById(req, res) {
-  const user = req.session.user;
-  const email_id = req.params.email_id;
+  try {
+    const user = req.session.user;
+    const email_id = req.params.email_id;
 
-  // determine if the current user is sender or receiver
-  const [email] = await dbConnection.execute(
-    `SELECT sender_id, receiver_id
-    FROM emails
-    WHERE emails.id = ?`,
-    [email_id]
-  );
-
-  if (!email) {
-  }
-
-  let updatedField =
-    email.sender_id === user.id
-      ? "is_deleted_by_sender"
-      : "is_deleted_by_recipient";
-
-  const [isDeleted] = await dbConnection.execute(
-    `UPDATE emails SET ${updatedField} = 1 WHERE emails.id = ?`,
-    [email_id]
-  );
-
-  if (!isDeleted) {
-    return res.render("email/detail", {
-      error: "Something went wrong!",
-      success: null,
+    // Get the target email
+    const email = await Email.findOne({
+      where: {
+        id: email_id,
+      },
     });
-  }
 
-  // Update session data after deletion
-  if (req.session.inboxData) {
-    req.session.inboxData.emails = req.session.inboxData.emails.filter(
-      (email) => email.id !== parseInt(email_id)
-    );
-  }
+    // Check if current user is the sender or the receiver
+    const updateField =
+      user.id === email.sender_id
+        ? { is_deleted_by_sender: true }
+        : { is_deleted_by_recipient: true };
 
-  // Redirect to inbox
-  res.redirect("/inbox");
+    // Update the target field
+    const [updateRes] = await Email.update(updateField, {
+      where: {
+        id: email_id,
+      },
+    });
+
+    if (!updateRes) {
+      return res.render("email/detail", {
+        error: "Something went wrong!",
+        success: null,
+      });
+    }
+
+    // Update session data after deletion
+    if (req.session.inboxData) {
+      req.session.inboxData.emails = req.session.inboxData.emails.filter(
+        (email) => email.id !== parseInt(email_id)
+      );
+    }
+
+    // Redirect to inbox
+    res.redirect("/inbox");
+  } catch (error) {
+    console.log(error);
+
+    // res.redirect();
+  }
 }
 
 module.exports = {

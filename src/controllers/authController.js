@@ -1,5 +1,6 @@
 const dbConnection = require("../config/dbConnection");
 const bcrypt = require("bcrypt");
+const User = require("../models/User");
 
 async function renderSignInPage(req, res) {
   const user = req.session.user ? req.session.user : null;
@@ -16,19 +17,16 @@ async function signin(req, res) {
 
   try {
     // Get user from db
-    const [users] = await dbConnection.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
+    const user = await User.findOne({
+      where: { email: email },
+    });
 
-    if (users.length === 0) {
+    if (!user) {
       return res.render("auth/signin", {
         error: "Email has not been registered",
         layout: false,
       });
     }
-
-    const user = users[0];
 
     // Compare password
     const match = await bcrypt.compare(password, user.password);
@@ -45,7 +43,7 @@ async function signin(req, res) {
     req.session.user = {
       id: user.id,
       email: user.email,
-      fullName: user.full_name,
+      fullName: user.fullname,
     };
 
     res.redirect("/");

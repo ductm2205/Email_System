@@ -9,7 +9,8 @@ async function deleteEmail(emailId) {
 
     if (response.ok) {
       // Redirect or refresh to show the updated list after deletion
-
+      alert("DELETED");
+      window.location.href = "/inbox";
     } else {
       alert("Failed to delete the email.");
     }
