@@ -209,10 +209,20 @@ async function deleteMultipleEmails(req, res) {
   }
 }
 
+async function renderComposePage(req, res) {
+  console.log(req.params);
+
+  res.render("emails/compose");
+}
+
+async function sendEmail(req, res) {}
+
 module.exports = {
   renderInboxPage,
   renderOutboxPage,
   renderEmailDetail,
   deleteEmailById,
   deleteMultipleEmails,
+  renderComposePage,
+  sendEmail,
 };

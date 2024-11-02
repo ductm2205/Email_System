@@ -11,4 +11,6 @@ router.get("/email/:email_id", emailController.renderEmailDetail);
 router.delete("/email/delete/:email_id?", emailController.deleteEmailById);
 router.delete("/api/email/delete", emailController.deleteMultipleEmails);
 
+router.get("/compose/:receiver_id?", emailController.renderComposePage);
+
 module.exports = router;

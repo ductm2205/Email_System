@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="/css/form.css">
+
+<div class="compose-wrapper">
+  <div class="page-name">
+    <h3>Compose</h3>
+    <div class="delete-box">
+      <button class="delete-btn" onclick="window.location.href='/'">Cancel</button>
+    </div>
+  </div>
+
+  <div class="form-container">
+
+    <form action="/compose" method="post" enctype="multipart/form-data">
+
+      <form action="/emails" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="receiver_id">Receiver ID</label>
+          <input type="number" id="receiver_id" name="receiver_id" required>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" required>
+        </div>
+
+        <div class="form-group">
+          <label for="body">Message Body</label>
+          <textarea id="body" name="body" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="attachment">Attachment</label>
+          <input type="file" id="attachment" name="attachment">
+        </div>
+
+        <div class="button-group">
+          <button type="reset">Clear</button>
+          <button type="submit">Send Email</button>
+        </div>
+      </form>
+
+    </form>
+
+  </div>
+</div>
