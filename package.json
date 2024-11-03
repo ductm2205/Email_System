@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Simple web-based Email System",
   "main": "server.js",
+  "author": {
+    "name": "imoutstagram"
+  },
   "scripts": {
     "start": "node server.js",
     "setup": "node dbsetup.js",
