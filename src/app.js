@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
 
 // create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, "../public/uploads/");
+const uploadDir = path.join(__dirname, "/public/uploads/");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
