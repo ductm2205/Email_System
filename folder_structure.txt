@@ -48,6 +48,8 @@ wpr<sId>/
 │   │   │   └── style.css        # Custom CSS
 │   │   ├── js/
 │   │   │   └── delete-email.js  # Client-side JS for delete
+│   │   │   └── deleteSelectedEmails.js  # Client-side JS for delete
+│   │   │   └── toggleSelectAll.js  # Toggle all checkboxes
 │   │   └── uploads/             # For email attachments
 │   │
 │   └── app.js                   # Express app setup

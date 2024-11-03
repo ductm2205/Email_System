@@ -1,13 +1,15 @@
 <header class="header">
-    <div class="user-info">
-        Welcome, <span style="font-weight: bold;">
-            <%= user.fullName %>
-        </span>
-    </div>
-    <nav class="nav">
-        <a href="/inbox">Inbox</a>
-        <a href="/outbox">Outbox</a>
-        <a href="/compose">Compose</a>
-        <a href="/signout" id="signout_button" style="color: red;">Sign Out</a>
-    </nav>
+  <div class="user-info">
+    Welcome, <span style="font-weight: bold;">
+      <%= user.fullName %>
+    </span>
+  </div>
+  <nav class="nav">
+    <a href="/inbox">Inbox</a>
+    <a href="/outbox">Outbox</a>
+    <a href="/compose">Compose</a>
+    <form action="/signout" method="POST">
+      <button id="signout_btn" type="submit">Sign Out</button>
+    </form>
+  </nav>
 </header>

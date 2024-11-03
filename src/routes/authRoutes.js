@@ -11,6 +11,6 @@ router.get("/signup", authController.renderSignUpPage);
 router.post("/signup", authController.signup);
 
 // signout
-router.get("/signout", authController.signout);
+router.post("/signout", authController.signout);
 
 module.exports = router;
