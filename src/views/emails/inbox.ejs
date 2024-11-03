@@ -22,6 +22,11 @@
         </tr>
       </thead>
       <tbody>
+        <% if (session.data.emails.length === 0)  { %>
+        <tr>
+          <td colspan="4">No Message found!</td>
+        </tr>
+        <% }  %>
         <% session.data.emails.forEach(email => { %>
         <tr class="email-item">
           <td>
