@@ -289,7 +289,7 @@ async function deleteMultipleEmails(req, res) {
       return res.status(400).json({ error: "No emails selected for deletion" });
     }
 
-    // Find emails and mark as deleted by sender or recipient based on the user's role
+    // Fetch emails
     const emails = await Email.findAll({
       where: {
         id: emailIds,
@@ -299,6 +299,7 @@ async function deleteMultipleEmails(req, res) {
     const updateFields = emails.map((email) => {
       return {
         id: email.id,
+        // Check whether the current user is sender or receiver
         updateField:
           user.id === email.sender_id
             ? { is_deleted_by_sender: true }

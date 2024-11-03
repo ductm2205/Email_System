@@ -30,7 +30,7 @@ async function deleteSelectedEmails() {
     if (response.ok) {
       const data = await response.json();
       alert(data.success);
-      window.location.reload(); // Reload the page to reflect the updated inbox
+      window.location.reload();
     } else {
       const errorData = await response.json();
       alert(errorData.error || "Failed to delete the emails.");
