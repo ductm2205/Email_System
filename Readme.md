@@ -1,4 +1,4 @@
-## WPR ASSIGMENT F2024
+## WPR ASSIGNMENT F2024
 
 ### Simple Email Web-based System
 
