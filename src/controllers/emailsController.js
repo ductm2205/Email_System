@@ -1,4 +1,3 @@
-const dbConnection = require("../config/dbConnection");
 const { paginate } = require("../utils/paginate");
 const { User, Email } = require("../config/associations");
 const { Op } = require("sequelize");
@@ -9,102 +8,225 @@ const emailsPerPage = 10;
 async function renderInboxPage(req, res) {
   const user = req.session.user;
 
-  const { page, offset, totalPages } = await paginate(
-    req,
-    emailsPerPage,
-    dbConnection,
-    "receiver_id"
-  );
+  try {
+    const { page, offset, totalPages } = await paginate(
+      req,
+      emailsPerPage,
+      "receiver_id"
+    );
 
-  // Get the emails for the current page
-  const [emails] = await dbConnection.execute(
-    `SELECT emails.*, users.full_name AS sender_fullname 
-    FROM emails 
-    JOIN users ON emails.sender_id = users.id 
-    WHERE receiver_id = ? 
-    AND emails.is_deleted_by_recipient = 0
-    ORDER BY sent_at DESC 
-    LIMIT ? 
-    OFFSET ?`,
-    [user.id, emailsPerPage, offset]
-  );
+    // Get the emails for the current page
+    const emails = await Email.findAll({
+      where: {
+        receiver_id: user.id,
+        is_deleted_by_recipient: false,
+      },
+      include: [
+        {
+          model: User,
+          as: "Sender",
+          attributes: ["full_name"],
+        },
+      ],
+      order: [["sent_at", "DESC"]],
+      limit: emailsPerPage,
+      offset: offset,
+    });
 
-  // Save the data in session for reuse
-  req.session.data = {
-    emails: emails,
-    currentPage: page,
-    totalPages: totalPages,
-  };
+    // Save the data in session for reuse
+    req.session.data = {
+      emails: emails,
+      currentPage: page,
+      totalPages: totalPages,
+    };
 
-  // Render the inbox page with pagination data
-  res.render("emails/inbox", {
-    success: null,
-    error: null,
-  });
+    // Render the inbox page with pagination data
+    res.render("emails/inbox", {
+      success: null,
+      error: null,
+    });
+  } catch (err) {
+    console.log(err);
+    res.render("error", {
+      success: null,
+      error: "Failed to process, please try again!",
+    });
+  }
 }
 
 async function renderOutboxPage(req, res) {
   const user = req.session.user;
+  try {
+    const { page, offset, totalPages } = await paginate(
+      req,
+      emailsPerPage,
+      "sender_id"
+    );
 
-  const { page, offset, totalPages } = await paginate(
-    req,
-    emailsPerPage,
-    dbConnection,
-    "sender_id"
-  );
+    // Get the emails for the current page
+    const emails = await Email.findAll({
+      where: {
+        sender_id: user.id,
+        is_deleted_by_sender: false,
+      },
+      include: [
+        {
+          model: User,
+          as: "Receiver",
+          attributes: ["full_name"],
+        },
+      ],
+      order: [["sent_at", "DESC"]],
+      limit: emailsPerPage,
+      offset: offset,
+    });
 
-  // Get the emails for the current page
-  const [emails] = await dbConnection.execute(
-    `SELECT emails.*, users.full_name AS receiver_fullname 
-    FROM emails 
-    JOIN users ON emails.receiver_id = users.id 
-    WHERE sender_id = ? 
-    AND emails.is_deleted_by_sender = 0
-    ORDER BY sent_at DESC 
-    LIMIT ? 
-    OFFSET ?`,
-    [user.id, emailsPerPage, offset]
-  );
+    //
+    req.session.data = {
+      emails: emails,
+      currentPage: page,
+      totalPages: totalPages,
+    };
 
-  //
-  req.session.data = {
-    emails: emails,
-    currentPage: page,
-    totalPages: totalPages,
-  };
-
-  res.render("emails/outbox", {
-    success: null,
-    error: null,
-  });
+    res.render("emails/outbox", {
+      success: null,
+      error: null,
+    });
+  } catch (err) {
+    console.log(err);
+    res.render("error", {
+      error: "Failed to process, please try again!",
+    });
+  }
 }
 
 async function renderEmailDetail(req, res) {
-  const user = req.session.user;
   const email_id = req.params.email_id;
 
-  // Fetch data
-  const [email] = await dbConnection.execute(
-    `
-    SELECT emails.*, 
-      sender.full_name AS sender_fullname, 
-      receiver.full_name AS receiver_fullname
-    FROM emails
-    JOIN users AS sender ON emails.sender_id = sender.id
-    JOIN users AS receiver ON emails.receiver_id = receiver.id
-    WHERE emails.id = ?;
-    `,
-    [email_id]
-  );
+  try {
+    // Fetch data
+    const email = await Email.findOne({
+      where: { id: email_id },
+      include: [
+        {
+          model: User,
+          as: "Sender",
+          attributes: ["full_name"],
+        },
+        {
+          model: User,
+          as: "Receiver",
+          attributes: ["full_name"],
+        },
+      ],
+    });
 
-  req.session.data = { email: email[0] };
+    req.session.data = { email: email };
 
-  return res.render("emails/detail", {
-    error: null,
-    success: null,
-  });
+    return res.render("emails/detail", {
+      error: null,
+      success: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.render("error", {
+      error: "Failed to process, please try again!",
+    });
+  }
 }
 
+async function renderComposePage(req, res) {
+  // Get the curr user
+  const user = req.session.user;
+
+  // Check if Replying to a mail
+  const receiver_id = req.params.receiver_id;
+
+  let receiver;
+  let users;
+
+  try {
+    // if not replying
+    if (!receiver_id) {
+      // Get all the other users
+      users = await User.findAll({
+        where: {
+          id: {
+            [Op.ne]: user.id,
+          },
+        },
+      });
+    } else {
+      receiver = await User.findByPk(receiver_id, {
+        include: [
+          {
+            model: Email,
+            as: "SentEmails",
+            where: { id: req.session.data.email.id },
+            required: false,
+          },
+          {
+            model: Email,
+            as: "ReceivedEmails",
+            where: { id: req.session.data.email.id },
+            required: false,
+          },
+        ],
+      });
+    }
+    // render to compose.ejs
+    res.render("emails/compose", {
+      error: null,
+      receivers: users,
+      receiver: receiver,
+    });
+  } catch (err) {
+    console.log(err);
+    res.render("emails/compose", {
+      error: "An error has occured, please try again!",
+      receiver: receiver || [],
+      receivers: users || [],
+    });
+  }
+}
+
+async function sendEmail(req, res) {
+  // get the user
+  const user = req.session.user;
+
+  // get the path of the file
+  const attachmentPath = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    // create new Email
+    const newEmail = await Email.create({
+      sender_id: user.id,
+      receiver_id: parseInt(req.body.receiver_id),
+      subject: req.body.subject,
+      body: req.body.body,
+      attachment_path: attachmentPath,
+      is_deleted_by_sender: false,
+      is_deleted_by_recipient: false,
+    });
+
+    // redirect to the outbox
+
+    if (!newEmail) {
+      res.redirect("/compose", {
+        error: "Failed to create new email, please try again!",
+      });
+    }
+    res.redirect("/outbox");
+  } catch (err) {
+    console.log(err);
+    // redirect to 'emails/compose'
+    res.render("emails/compose", {
+      error: "Failed to send email, please try again",
+    });
+  }
+}
+
+/** DELETE APIs */
 async function deleteEmailById(req, res) {
   try {
     const user = req.session.user;
@@ -206,91 +328,6 @@ async function deleteMultipleEmails(req, res) {
     res
       .status(500)
       .json({ error: "An error occurred while deleting the emails" });
-  }
-}
-
-async function renderComposePage(req, res) {
-  // Get the curr user
-  const user = req.session.user;
-
-  // Check if Replying to a mail
-  const receiver_id = req.params.receiver_id;
-
-  let receiver;
-  let users;
-
-  try {
-    // if not replying
-    if (!receiver_id) {
-      // Get all the other users
-      users = await User.findAll({
-        where: {
-          id: {
-            [Op.ne]: user.id,
-          },
-        },
-      });
-    } else {
-      receiver = await User.findByPk(receiver_id, {
-        include: [
-          {
-            model: Email,
-            as: "SentEmails",
-            where: { id: req.session.data.email.id },
-            required: false,
-          },
-        ],
-      });
-
-      console.log(receiver.SentEmails[0].subject);
-    }
-    // render to compose.ejs
-    res.render("emails/compose", {
-      error: null,
-      receivers: users,
-      receiver: receiver,
-    });
-  } catch (err) {
-    console.log(err);
-    res.render("emails/compose", {
-      error: "An error has occured, please try again!",
-      receiver: receiver,
-      receivers: users,
-    });
-  }
-}
-
-async function sendEmail(req, res) {
-  // get the user
-  const user = req.session.user;
-
-  // get the path of the file
-  const attachmentPath = req.file ? `/uploads/${req.file.filename}` : null;
-
-  try {
-    // create new Email
-    const newEmail = await Email.create({
-      sender_id: user.id,
-      receiver_id: parseInt(req.body.receiver_id),
-      subject: req.body.subject,
-      body: req.body.body,
-      attachment_path: attachmentPath,
-      is_deleted_by_sender: false,
-      is_deleted_by_recipient: false,
-    });
-
-    // redirect to the outbox
-
-    if (!newEmail) {
-      res.redirect("/compose", 500);
-    }
-    res.redirect("/outbox");
-  } catch (err) {
-    console.log(err);
-    // redirect to 'emails/compose'
-    res.render("emails/compose", {
-      error: "Failed to send email, please try again",
-    });
   }
 }
 

@@ -28,7 +28,7 @@
             <input type="checkbox" class="email-checkbox" value="<%= email.id %>">
           </td>
           <td class="sender" onclick="window.location.href='/email/<%= email.id %>'">
-            <%= email.sender_fullname %>
+            <%= email.Sender.full_name %>
           </td>
           <td class="subject" onclick="window.location.href='/email/<%= email.id %>'">
             <%= email.subject %>

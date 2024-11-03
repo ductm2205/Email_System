@@ -22,7 +22,11 @@ wpr<sId>/
 │   ├── middlewares/
 │   │   ├── auth.middleware.js    # Authentication check
 │   │   └── layout.middleware.js  # Layout setup
-│   │
+│   ├── utils/
+│   │   ├── constants.js    # Constants definition
+│   │   ├── dbConfig.js    # Database configuration
+│   │   ├── paginate.js    # Paginating function
+│   │   ├── upload.js    # File uploading function
 │   ├── views/
 │   │   ├── partials/
 │   │   │   ├── header.ejs       # Header with user info

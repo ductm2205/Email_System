@@ -39,7 +39,7 @@
       <div class="form-group">
         <label for="subject">Subject</label>
         <% if (receiver) { %>
-        <input type="text" id="subject" name="subject" value="Re: <%= receiver.SentEmails[0].subject %>" required>
+        <input type="text" id="subject" name="subject" value="Re: <%= receiver.SentEmails.length != 0 ? receiver.SentEmails[0].subject : receiver.ReceivedEmails[0].subject %>" required>
         <% }  else { %>
         <input type="text" id="subject" name="subject" required>
         <% } %>
