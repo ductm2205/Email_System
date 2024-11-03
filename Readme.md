@@ -12,5 +12,5 @@
 - Clone the git repo
 - Create the .env file, update the variables
 - Run 'npm install'
-- Run 'node dbsetup.js' to setup database
-- Run 'node server.js' or 'nodemon server.js' to start the application
+- Run 'npm run setup' to setup database
+- Run 'npm start' or 'node server.js' to start the application
