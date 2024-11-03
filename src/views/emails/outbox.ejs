@@ -1,5 +1,9 @@
 <div class="inbox-wrapper">
-
+  <% if (success) { %>
+  <div class="success">
+    <%= success %>
+  </div>
+  <% } %>
   <div class="page-name">
     <h3>Outbox</h3>
     <div class="delete-box">

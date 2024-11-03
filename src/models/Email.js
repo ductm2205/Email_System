@@ -60,8 +60,5 @@ const Email = sequelize.define(
   }
 );
 
-// Define associations
-Email.belongsTo(User, { as: "Sender", foreignKey: "sender_id" });
-Email.belongsTo(User, { as: "Receiver", foreignKey: "receiver_id" });
 
 module.exports = Email;

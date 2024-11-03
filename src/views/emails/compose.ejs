@@ -8,13 +8,21 @@
     </div>
   </div>
 
+  <% if (error) { %>
+  <div class="error">
+    <%= error %>
+  </div>
+  <% } %>
+
   <div class="form-container">
-
-
-    <form action="/emails" method="POST" enctype="multipart/form-data">
+    <form action="/email" method="POST" enctype="multipart/form-data">
       <div class="form-group">
         <label for="receiver_id">Receiver ID</label>
-        <% if (receiver) { %>
+        <% if (receiver == null && receivers == null ) { %>
+        <select id="receiver_id" name="receiver_id" required>
+          <option value="">There is no other user in the system</option>
+        </select>
+        <% }  else if (receiver) { %>
         <select id="receiver_id" name="receiver_id" required>
           <option value="<%= receiver.id %>"><%= receiver.full_name %></option>
         </select>
@@ -30,7 +38,11 @@
 
       <div class="form-group">
         <label for="subject">Subject</label>
+        <% if (receiver) { %>
+        <input type="text" id="subject" name="subject" value="Re: <%= receiver.SentEmails[0].subject %>" required>
+        <% }  else { %>
         <input type="text" id="subject" name="subject" required>
+        <% } %>
       </div>
 
       <div class="form-group">
