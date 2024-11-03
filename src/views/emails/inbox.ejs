@@ -49,7 +49,10 @@
     </table>
   </div>
 
+  <% if (session.data.emails.length !== 0) { %>
   <%- include("../partials/pagination") %>
+  <% } %>
+
 </div>
 
 <script src="/js/toggleSelectAll.js"></script>

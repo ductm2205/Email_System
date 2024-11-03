@@ -1,18 +1,19 @@
-wpr<sId>/                      # Replace with your student ID
+wpr<sId>/                     
 │
 ├── src/
 │   ├── config/
-│   │   ├── database.js            # MySQL connection configuration
+│   │   ├── dbConnection.js            # MySQL connection configuration
 │   │   └── middlewares.js         # Auth middleware setup
+│   │   └── associations.js        # Models relationships
+│   │   └── storage.js         # Storage setup
 │   │
 │   ├── routes/
 │   │   ├── auth.routes.js         # Sign-in, Sign-up routes
 │   │   ├── email.routes.js        # Email related routes
-│   │   └── index.js              # Route aggregator
 │   │
 │   ├── controllers/
-│   │   ├── auth.controller.js     # Authentication logic
-│   │   └── email.controller.js    # Email handling logic
+│   │   ├── authController.js     # Authentication logic
+│   │   └── emailController.js    # Email handling logic
 │   │
 │   ├── models/
 │   │   ├── user.model.js         # User table operations
@@ -20,16 +21,16 @@ wpr<sId>/                      # Replace with your student ID
 │   │
 │   ├── middlewares/
 │   │   ├── auth.middleware.js    # Authentication check
-│   │   └── upload.middleware.js  # File upload handling
+│   │   └── layout.middleware.js  # Layout setup
 │   │
 │   ├── views/
 │   │   ├── partials/
 │   │   │   ├── header.ejs       # Header with user info
-│   │   │   ├── navigation.ejs   # Left side menu
 │   │   │   └── pagination.ejs   # Pagination component
 │   │   ├── auth/
 │   │   │   ├── signin.ejs       # Sign-in page
 │   │   │   └── signup.ejs       # Sign-up page
+│   │   │   └── signup-success.ejs       # Sign-up successfull page
 │   │   ├── emails/
 │   │   │   ├── inbox.ejs        # Inbox page
 │   │   │   ├── outbox.ejs       # Outbox page

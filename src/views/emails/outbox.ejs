@@ -48,7 +48,9 @@
     </table>
   </div>
 
+  <% if (session.data.emails.length !== 0) { %>
   <%- include("../partials/pagination") %>
+  <% } %>
 
 
 </div>

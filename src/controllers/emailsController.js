@@ -4,7 +4,7 @@ const { User, Email } = require("../config/associations");
 const { Op } = require("sequelize");
 
 // Pagination
-const emailsPerPage = 5;
+const emailsPerPage = 10;
 
 async function renderInboxPage(req, res) {
   const user = req.session.user;
