@@ -29,11 +29,11 @@ const Email = sequelize.define(
     },
     subject: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     body: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     attachment_path: {
       type: DataTypes.STRING,
