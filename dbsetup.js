@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 async function setupDatabase() {
   try {
     // Sync database schema
-    await sequelize.sync({ force: true }); // { force: true } drops existing tables and recreates them
+    await sequelize.sync({ force: true });
 
     // Seed initial users
     const hashedPw = await bcrypt.hash("password123", 10);
