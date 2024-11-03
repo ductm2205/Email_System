@@ -55,6 +55,7 @@ async function renderInboxPage(req, res) {
 }
 
 async function renderOutboxPage(req, res) {
+  const successMessage = req.query.success ? req.query.success : null;
   const user = req.session.user;
   try {
     const { page, offset, totalPages } = await paginate(
@@ -89,7 +90,7 @@ async function renderOutboxPage(req, res) {
     };
 
     res.render("emails/outbox", {
-      success: null,
+      success: successMessage,
       error: null,
     });
   } catch (err) {
@@ -176,7 +177,7 @@ async function renderComposePage(req, res) {
     }
     // render to compose.ejs
     res.render("emails/compose", {
-      error: null,
+      error: req.query.error ? req.query.error : null,
       receivers: users,
       receiver: receiver,
     });
@@ -212,11 +213,12 @@ async function sendEmail(req, res) {
     // redirect to the outbox
 
     if (!newEmail) {
-      res.redirect("/compose", {
-        error: "Failed to create new email, please try again!",
-      });
+      res.redirect(
+        "/compose?error=Failed%20to%20create%20new%20email,%20please%20try%20again!"
+      );
     }
-    res.redirect("/outbox");
+    res.status(200);
+    res.redirect("/outbox?success=Email%20sent%20successfully!");
   } catch (err) {
     console.log(err);
     // redirect to 'emails/compose'

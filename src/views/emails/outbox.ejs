@@ -35,7 +35,7 @@
             <%= email.Receiver.full_name %>
           </td>
           <td class="subject" onclick="window.location.href='/email/<%= email.id %>'">
-            <%= email.subject %>
+            <%= email.subject ? email.subject : "(no subject)" %>
           </td>
           <td class="sent_at" onclick="window.location.href='/email/<%= email.id %>'">
             <% const sentDate=new Date(email.sent_at); const now=new Date(); const oneDay=24 * 60 * 60 *

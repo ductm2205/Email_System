@@ -5,7 +5,7 @@
   </div>
   <% } %>
   <div class="page-name">
-    <h3><%= session.data.email.subject %></h3>
+    <h3><%= session.data.email.subject ? session.data.email.subject : "(no subject)" %></h3>
     <div class="delete-box">
       <div class="reply">
         <a href="/compose/<%= session.user.id === session.data.email.sender_id ? session.data.email.receiver_id : session.data.email.sender_id  %> "><button>Reply</button></a>
@@ -28,7 +28,7 @@
 
   <div class="email-body">
     <h5>Body:</h5>
-    <p><%= session.data.email.body%></p>
+    <p><%= session.data.email.body ? session.data.email.body : "(no body)" %></p>
   </div>
   <div class="email-attachment-path">
     <h5>Attachment:</h5>
