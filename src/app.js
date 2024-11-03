@@ -1,6 +1,5 @@
 const express = require("express");
 const session = require("express-session");
-const multer = require("multer");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const layouts = require("express-ejs-layouts");

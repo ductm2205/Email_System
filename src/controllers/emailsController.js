@@ -2,6 +2,7 @@ const dbConnection = require("../config/dbConnection");
 const { paginate } = require("../utils/paginate");
 const User = require("../models/User");
 const Email = require("../models/Email");
+const { Op } = require("sequelize");
 
 // Pagination
 const emailsPerPage = 5;
@@ -210,9 +211,34 @@ async function deleteMultipleEmails(req, res) {
 }
 
 async function renderComposePage(req, res) {
-  console.log(req.params);
+  // Get the curr user
+  const user = req.session.user;
 
-  res.render("emails/compose");
+  // Check if Replying to a mail
+  const receiver_id = req.params.receiver_id;
+
+  let receiver;
+  let users;
+  // if not replying
+  if (!receiver_id) {
+    // Get all the other users
+    users = await User.findAll({
+      where: {
+        id: {
+          [Op.ne]: user.id,
+        },
+      },
+    });
+  } else {
+    receiver = await User.findOne({
+      where: {
+        id: receiver_id,
+      },
+    });
+  }
+
+  // render to compose.ejs
+  res.render("emails/compose", { receivers: users, receiver: receiver });
 }
 
 async function sendEmail(req, res) {}
