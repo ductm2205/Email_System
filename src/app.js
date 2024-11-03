@@ -1,9 +1,9 @@
 const express = require("express");
 const session = require("express-session");
-const multer = require("multer");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const layouts = require("express-ejs-layouts");
+const fs = require("fs");
 
 const methodOverride = require("method-override");
 
@@ -18,6 +18,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
+
+// create uploads directory if it doesn't exist
+const uploadDir = path.join(__dirname, "../public/uploads/");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // setup session
 app.use(

@@ -1,7 +1,7 @@
 const dbConnection = require("../config/dbConnection");
 const { paginate } = require("../utils/paginate");
-const User = require("../models/User");
-const Email = require("../models/Email");
+const { User, Email } = require("../config/associations");
+const { Op } = require("sequelize");
 
 // Pagination
 const emailsPerPage = 5;
@@ -66,7 +66,7 @@ async function renderOutboxPage(req, res) {
     [user.id, emailsPerPage, offset]
   );
 
-  // Save the data in session for reuse
+  //
   req.session.data = {
     emails: emails,
     currentPage: page,
@@ -210,12 +210,89 @@ async function deleteMultipleEmails(req, res) {
 }
 
 async function renderComposePage(req, res) {
-  console.log(req.params);
+  // Get the curr user
+  const user = req.session.user;
 
-  res.render("emails/compose");
+  // Check if Replying to a mail
+  const receiver_id = req.params.receiver_id;
+
+  let receiver;
+  let users;
+
+  try {
+    // if not replying
+    if (!receiver_id) {
+      // Get all the other users
+      users = await User.findAll({
+        where: {
+          id: {
+            [Op.ne]: user.id,
+          },
+        },
+      });
+    } else {
+      receiver = await User.findByPk(receiver_id, {
+        include: [
+          {
+            model: Email,
+            as: "SentEmails",
+            where: { id: req.session.data.email.id },
+            required: false,
+          },
+        ],
+      });
+
+      console.log(receiver.SentEmails[0].subject);
+    }
+    // render to compose.ejs
+    res.render("emails/compose", {
+      error: null,
+      receivers: users,
+      receiver: receiver,
+    });
+  } catch (err) {
+    console.log(err);
+    res.render("emails/compose", {
+      error: "An error has occured, please try again!",
+      receiver: receiver,
+      receivers: users,
+    });
+  }
 }
 
-async function sendEmail(req, res) {}
+async function sendEmail(req, res) {
+  // get the user
+  const user = req.session.user;
+
+  // get the path of the file
+  const attachmentPath = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    // create new Email
+    const newEmail = await Email.create({
+      sender_id: user.id,
+      receiver_id: parseInt(req.body.receiver_id),
+      subject: req.body.subject,
+      body: req.body.body,
+      attachment_path: attachmentPath,
+      is_deleted_by_sender: false,
+      is_deleted_by_recipient: false,
+    });
+
+    // redirect to the outbox
+
+    if (!newEmail) {
+      res.redirect("/compose", 500);
+    }
+    res.redirect("/outbox");
+  } catch (err) {
+    console.log(err);
+    // redirect to 'emails/compose'
+    res.render("emails/compose", {
+      error: "Failed to send email, please try again",
+    });
+  }
+}
 
 module.exports = {
   renderInboxPage,

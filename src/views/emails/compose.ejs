@@ -8,38 +8,59 @@
     </div>
   </div>
 
+  <% if (error) { %>
+  <div class="error">
+    <%= error %>
+  </div>
+  <% } %>
+
   <div class="form-container">
+    <form action="/email" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="receiver_id">Receiver ID</label>
+        <% if (receiver == null && receivers == null ) { %>
+        <select id="receiver_id" name="receiver_id" required>
+          <option value="">There is no other user in the system</option>
+        </select>
+        <% }  else if (receiver) { %>
+        <select id="receiver_id" name="receiver_id" required>
+          <option value="<%= receiver.id %>"><%= receiver.full_name %></option>
+        </select>
+        <% } else { %>
+        <select id="receiver_id" name="receiver_id" required>
+          <option value="">Select a recipient...</option>
+          <% receivers.forEach(function(user) { %>
+          <option value="<%= user.id %>"><%= user.full_name %></option>
+          <% }); %>
+        </select>
+        <% } %>
+      </div>
 
-    <form action="/compose" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <% if (receiver) { %>
+        <input type="text" id="subject" name="subject" value="Re: <%= receiver.SentEmails[0].subject %>" required>
+        <% }  else { %>
+        <input type="text" id="subject" name="subject" required>
+        <% } %>
+      </div>
 
-      <form action="/emails" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="receiver_id">Receiver ID</label>
-          <input type="number" id="receiver_id" name="receiver_id" required>
-        </div>
+      <div class="form-group">
+        <label for="body">Message Body</label>
+        <textarea id="body" name="body" required></textarea>
+      </div>
 
-        <div class="form-group">
-          <label for="subject">Subject</label>
-          <input type="text" id="subject" name="subject" required>
-        </div>
+      <div class="form-group">
+        <label for="attachment">Attachment</label>
+        <input type="file" id="attachment" name="attachment">
+      </div>
 
-        <div class="form-group">
-          <label for="body">Body</label>
-          <textarea id="body" name="body" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="attachment">Attachment</label>
-          <input type="file" id="attachment" name="attachment">
-        </div>
-
-        <div class="button-group">
-          <button type="reset">Clear</button>
-          <button type="submit">Send Email</button>
-        </div>
-      </form>
-
+      <div class="button-group">
+        <button type="reset">Clear</button>
+        <button type="submit">Send Email</button>
+      </div>
     </form>
+
 
   </div>
 </div>
