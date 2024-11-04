@@ -1,66 +1,89 @@
-<link rel="stylesheet" href="/css/form.css">
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="compose-wrapper">
-  <div class="page-name">
-    <h3>Compose</h3>
-    <div class="delete-box">
-      <button class="delete-btn" onclick="window.location.href='/'">Cancel</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email System</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
+
+<body>
+  <div class="container">
+    <% if (session.user) { %>
+    <%- include('partials/header', {user: session.user}) %>
+    <% } %>
+
+    <!-- Main content body -->
+    <div class="main-content">
+      <div class="compose-wrapper">
+        <div class="page-name">
+          <h3>Compose</h3>
+          <div class="delete-box">
+            <button class="delete-btn" onclick="window.location.href='/'">Cancel</button>
+          </div>
+        </div>
+
+        <% if (error) { %>
+        <div class="error">
+          <%= error %>
+        </div>
+        <% } %>
+
+        <div class="form-container">
+          <form action="/email" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="receiver_id">Receiver ID</label>
+              <% if (receiver == null && receivers == null ) { %>
+              <select id="receiver_id" name="receiver_id" required>
+                <option value="">There is no other user in the system</option>
+              </select>
+              <% }  else if (receiver) { %>
+              <select id="receiver_id" name="receiver_id" required>
+                <option value="<%= receiver.id %>"><%= receiver.full_name %></option>
+              </select>
+              <% } else { %>
+              <select id="receiver_id" name="receiver_id" required>
+                <option value="">Select a recipient...</option>
+                <% receivers.forEach(function(user) { %>
+                <option value="<%= user.id %>"><%= user.full_name %></option>
+                <% }); %>
+              </select>
+              <% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <% if (receiver) { %>
+              <input type="text" id="subject" name="subject" value="Re: <%= receiver.SentEmails.length != 0 ? receiver.SentEmails[0].subject : receiver.ReceivedEmails[0].subject %>" required>
+              <% }  else { %>
+              <input type="text" id="subject" name="subject">
+              <% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="body">Body</label>
+              <textarea id="body" name="body"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="attachment">Attachment</label>
+              <input type="file" id="attachment" name="attachment">
+            </div>
+
+            <div class="button-group">
+              <button type="reset">Clear</button>
+              <button type="submit">Send Email</button>
+            </div>
+          </form>
+
+
+        </div>
+      </div>
     </div>
-  </div>
-
-  <% if (error) { %>
-  <div class="error">
-    <%= error %>
-  </div>
-  <% } %>
-
-  <div class="form-container">
-    <form action="/email" method="POST" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="receiver_id">Receiver ID</label>
-        <% if (receiver == null && receivers == null ) { %>
-        <select id="receiver_id" name="receiver_id" required>
-          <option value="">There is no other user in the system</option>
-        </select>
-        <% }  else if (receiver) { %>
-        <select id="receiver_id" name="receiver_id" required>
-          <option value="<%= receiver.id %>"><%= receiver.full_name %></option>
-        </select>
-        <% } else { %>
-        <select id="receiver_id" name="receiver_id" required>
-          <option value="">Select a recipient...</option>
-          <% receivers.forEach(function(user) { %>
-          <option value="<%= user.id %>"><%= user.full_name %></option>
-          <% }); %>
-        </select>
-        <% } %>
-      </div>
-
-      <div class="form-group">
-        <label for="subject">Subject</label>
-        <% if (receiver) { %>
-        <input type="text" id="subject" name="subject" value="Re: <%= receiver.SentEmails.length != 0 ? receiver.SentEmails[0].subject : receiver.ReceivedEmails[0].subject %>" required>
-        <% }  else { %>
-        <input type="text" id="subject" name="subject">
-        <% } %>
-      </div>
-
-      <div class="form-group">
-        <label for="body">Body</label>
-        <textarea id="body" name="body"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="attachment">Attachment</label>
-        <input type="file" id="attachment" name="attachment">
-      </div>
-
-      <div class="button-group">
-        <button type="reset">Clear</button>
-        <button type="submit">Send Email</button>
-      </div>
-    </form>
-
 
   </div>
-</div>
+</body>
+
+</html>

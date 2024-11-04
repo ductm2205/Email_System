@@ -2,14 +2,14 @@
   "name": "wpr2101040063",
   "version": "1.0.0",
   "description": "Simple web-based Email System",
-  "main": "server.js",
+  "main": "index.js",
   "author": {
-    "name": "imoutstagram"
+    "name": "Tran Minh Duc"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "setup": "node dbsetup.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
