@@ -1,87 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email System</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
-  <div class="container">
-    <% if (session.user) { %>
-    <%- include('../partials/header', {user: session.user}) %>
-    <% } %>
-
-    <!-- Main content body -->
-    <div class="main-content">
-      <div class="inbox-wrapper">
+<!-- Main content body -->
+<div class="main-content">
+    <div class="inbox-wrapper">
         <% if (success) { %>
-        <div class="success">
-          <%= success %>
-        </div>
+            <div class="success">
+                <%= success %>
+            </div>
         <% } %>
         <div class="page-name">
-          <h3>Outbox</h3>
-          <div class="delete-box">
-            <button class="delete-btn" onclick="deleteSelectedEmails()">Delete</button>
-          </div>
+            <h3>Outbox</h3>
+            <div class="delete-box">
+                <button class="delete-btn" onclick="deleteSelectedEmails()">Delete</button>
+            </div>
         </div>
         <div class="email-div">
-          <table class="email-list">
-            <thead>
-              <tr>
-                <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
-                <th>Receiver</th>
-                <th>Subject</th>
-                <th>Sent At</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (session.data.emails.length === 0)  { %>
-              <tr>
-                <td colspan="4">No Message found!</td>
-              </tr>
-              <% }  %>
-              <% session.data.emails.forEach(email=> { %>
-              <tr class="email-item">
-                <td>
-                  <input type="checkbox" class="email-checkbox" value="<%= email.id %>">
-                </td>
-                <td class="sender" onclick="window.location.href='/email/<%= email.id %>'">
-                  <%= email.Receiver.full_name %>
-                </td>
-                <td class="subject" onclick="window.location.href='/email/<%= email.id %>'">
-                  <%= email.subject ? email.subject : "(no subject)" %>
-                </td>
-                <td class="sent_at" onclick="window.location.href='/email/<%= email.id %>'">
-                  <% const sentDate=new Date(email.sent_at); const now=new Date(); const oneDay=24 * 60 * 60 *
-                              1000; const daysAgo=Math.floor((now - sentDate) / oneDay); if (daysAgo===0) { %>
-                  <%= sentDate.toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit' }) %>
-                  <% } else if (daysAgo===1) { %>
-                  Yesterday
-                  <% } else { %>
-                  <%= sentDate.toLocaleDateString('en-US', { month: 'short' , day: 'numeric' }) %>
-                  <% } %>
-                </td>
-              </tr>
-              <% }); %>
-            </tbody>
-          </table>
+            <table class="email-list">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
+                    <th>Receiver</th>
+                    <th>Subject</th>
+                    <th>Sent At</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (session.data.emails.length === 0)  { %>
+                    <tr>
+                        <td colspan="4">No Message found!</td>
+                    </tr>
+                <% } %>
+                <% session.data.emails.forEach(email=> { %>
+                    <tr class="email-item">
+                        <td>
+                            <input type="checkbox" class="email-checkbox" value="<%= email.id %>">
+                        </td>
+                        <td class="sender" onclick="window.location.href='/email/<%= email.id %>'">
+                            <%= email.Receiver.full_name %>
+                        </td>
+                        <td class="subject" onclick="window.location.href='/email/<%= email.id %>'">
+                            <%= email.subject ? email.subject : "(no subject)" %>
+                        </td>
+                        <td class="sent_at" onclick="window.location.href='/email/<%= email.id %>'">
+                            <% const sentDate = new Date(email.sent_at); const now = new Date(); const oneDay = 24 * 60 * 60 *
+                                    1000; const daysAgo = Math.floor((now - sentDate) / oneDay); if (daysAgo === 0) { %>
+                                <%= sentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) %>
+                            <% } else if (daysAgo === 1) { %>
+                                Yesterday
+                            <% } else { %>
+                                <%= sentDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) %>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+                </tbody>
+            </table>
         </div>
 
         <% if (session.data.emails.length !== 0) { %>
-        <%- include("../partials/pagination") %>
+            <%- include("../partials/pagination") %>
         <% } %>
 
-
-      </div>
     </div>
+</div>
 
-  </div>
-  <script src="/js/toggleSelectAll.js"></script>
-  <script src="/js/deleteSelectedEmails.js"></script>
-</body>
 
-</html>
+<script src="/js/toggleSelectAll.js"></script>
+<script src="/js/deleteSelectedEmails.js"></script>

@@ -1,63 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email System</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
-  <div class="container">
-    <% if (session.user) { %>
-    <%- include('../partials/header', {user: session.user}) %>
-    <% } %>
 
     <!-- Main content body -->
     <div class="main-content">
-      <div class="email-detail">
-        <% if (error) { %>
-        <div class="error">
-          <%= error %>
-        </div>
-        <% } %>
-        <div class="page-name">
-          <h3><%= session.data.email.subject ? session.data.email.subject : "(no subject)" %></h3>
-          <div class="delete-box">
-            <div class="reply">
-              <a href="/compose/<%= session.user.id === session.data.email.sender_id ? session.data.email.receiver_id : session.data.email.sender_id  %> "><button>Reply</button></a>
+        <div class="email-detail">
+            <% if (error) { %>
+                <div class="error">
+                    <%= error %>
+                </div>
+            <% } %>
+            <div class="page-name">
+                <h3><%= session.data.email.subject ? session.data.email.subject : "(no subject)" %></h3>
+                <div class="delete-box">
+                    <div class="reply">
+                        <a href="/compose/<%= session.user.id === session.data.email.sender_id ? session.data.email.receiver_id : session.data.email.sender_id %> ">
+                            <button>Reply</button>
+                        </a>
+                    </div>
+                    <div class="delete">
+                        <button class="delete-btn" onclick="deleteEmail('<%= session.data.email.id %>')">Delete</button>
+                    </div>
+                </div>
             </div>
-            <div class="delete">
-              <button class="delete-btn" onclick="deleteEmail('<%= session.data.email.id %>')">Delete</button>
+
+            <div class="email-sender">
+                <h5>Sent by: </h5>
+                <p><%= session.data.email.Sender.full_name %></p>
             </div>
-          </div>
-        </div>
 
-        <div class="email-sender">
-          <h5>Sent by: </h5>
-          <p><%= session.data.email.Sender.full_name %></p>
-        </div>
+            <div class="email-receiver">
+                <h5>Sent to: </h5>
+                <p><%= session.data.email.Receiver.full_name %></p>
+            </div>
 
-        <div class="email-receiver">
-          <h5>Sent to: </h5>
-          <p><%= session.data.email.Receiver.full_name %></p>
+            <div class="email-body">
+                <h5>Body:</h5>
+                <p><%= session.data.email.body ? session.data.email.body : "(no body)" %></p>
+            </div>
+            <div class="email-attachment-path">
+                <h5>Attachment:</h5>
+                <a href="<%= session.data.email.attachment_path %>"
+                   download="email_attachment"><%= session.data.email.attachment_path %></a>
+            </div>
         </div>
-
-        <div class="email-body">
-          <h5>Body:</h5>
-          <p><%= session.data.email.body ? session.data.email.body : "(no body)" %></p>
-        </div>
-        <div class="email-attachment-path">
-          <h5>Attachment:</h5>
-          <a href="<%= session.data.email.attachment_path %>" download="email_attachment"><%= session.data.email.attachment_path%></a>
-        </div>
-      </div>
     </div>
 
-  </div>
-  <!-- script to call the delete method -->
-  <script src="/js/deleteEmail.js"></script>
-</body>
 
-</html>
+<!-- script to call the delete method -->
+<script src="/js/deleteEmail.js"></script>
