@@ -16,12 +16,12 @@ wpr<sId>/
 │   │   └── emailController.js    # Email handling logic
 │   │
 │   ├── models/
-│   │   ├── user.model.js         # User table operations
-│   │   └── email.model.js        # Email table operations
+│   │   ├── User.js         # User table operations
+│   │   └── Email.js        # Email table operations
 │   │
 │   ├── middlewares/
-│   │   ├── auth.middleware.js    # Authentication check
-│   │   └── layout.middleware.js  # Layout setup
+│   │   ├── authMiddleware.js    # Authentication check
+│   │   └── layoutMiddleware.js  # Layout setup
 │   ├── utils/
 │   │   ├── constants.js    # Constants definition
 │   │   ├── dbConfig.js    # Database configuration

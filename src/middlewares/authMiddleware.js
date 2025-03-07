@@ -1,4 +1,5 @@
 const dbConnection = require("../config/dbConnection");
+const User = require("../models/User.js");
 
 async function isAuthenticated(req, res, next) {
   const userId = req.session.user?.id;
@@ -8,17 +9,15 @@ async function isAuthenticated(req, res, next) {
   }
 
   try {
-    const [users] = await dbConnection.query(
-      "SELECT * FROM users WHERE id = ?",
-      [userId]
-    );
+    // Use Sequelize finder
+    const user = await User.findByPk(userId);
 
-    if (users.length === 0) {
-      res.session.destroy();
+    if (!user) {
+      req.session.destroy();
       return res.redirect("/signin");
     }
-    req.user = users[0];
 
+    req.user = user;
     next();
   } catch (error) {
     console.log(error);

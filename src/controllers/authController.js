@@ -16,9 +16,9 @@ async function signin(req, res) {
   const { email, password } = req.body;
 
   try {
-    // Get user from db
-    const user = await User.findOne({
-      where: { email: email },
+    // Sequelize finder
+    const user = await User.findOne({ 
+      where: { email: email } 
     });
 
     if (!user) {
@@ -38,14 +38,12 @@ async function signin(req, res) {
         layout: false,
       });
     }
-
-    // Store user in session
+    // Store Sequelize model instance in session
     req.session.user = {
       id: user.id,
       email: user.email,
       fullName: user.full_name,
     };
-
     res.redirect("/");
   } catch (error) {
     console.error("Error during sign-in:", error);
@@ -69,14 +67,12 @@ async function signup(req, res) {
   const { fullName, email, password, confirmPassword } = req.body;
 
   try {
-    // Check if email already exists
-    const [existingUsers] = await dbConnection.execute(
-      "SELECT id FROM users WHERE email = ?",
-      [email]
-    );
+    // Check if email exists using Sequelize
+    const existingUser = await User.findOne({ 
+      where: { email: email } 
+    });
 
-    // collapse email
-    if (existingUsers.length > 0) {
+    if (existingUser) {
       return res.render("auth/signup", {
         error: "Email address is already in use",
         success: null,
@@ -107,14 +103,15 @@ async function signup(req, res) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new user
-    const isSignedUp = await dbConnection.execute(
-      "INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)",
-      [fullName, email, hashedPassword]
-    );
+    // Create user with Sequelize
+    const newUser = await User.create({
+      full_name: fullName,
+      email: email,
+      password: hashedPassword,
+    });
 
-    if (!isSignedUp) {
-      res.render("auth/signup", {
+    if (!newUser) {
+      return res.render("auth/signup", {
         error: "Something went wrong!",
         success: null,
         values: null,
